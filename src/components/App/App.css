@@ -1,0 +1,15 @@
+body {
+    font-family : 'Fira Sans Condensed', sans-serif !important;
+    background : #f3f3f3 !important;
+}
+
+.text-title {
+    font-family : 'Open Sans', sans-serif;
+    font-size: 2rem;
+    text-transform: uppercase;
+    text-align: center;
+    color : #38024a;
+    font-weight: 200;
+}
+
+
