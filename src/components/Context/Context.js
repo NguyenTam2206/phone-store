@@ -15,21 +15,20 @@ const ProductProvider = (props) => {
     useEffect(() => {
         let tempProducts = [];
         storeProducts.forEach(item => {
-            const singleItem = { ...item };
-            tempProducts = [...tempProducts, singleItem];
+            tempProducts = [...tempProducts, item];
         });
         setState((state) => {
             return { ...state, products: tempProducts };
         })
     }, [])
-    
+
     const getItem = (id) => {
         const product = state.products.find(item => item.id === id);
         return product;
     }
     const handleDetail = (id) => {
         const product = getItem(id);
-        setState(() => {
+        setState((state) => {
             return { ...state, detailProduct: product };
         })
     }
@@ -46,20 +45,24 @@ const ProductProvider = (props) => {
         //     products: tempProducts,
         //     cart:[...state.cart, product],
         // })
-        setState(() => {
-            return ({ ...state, products: tempProducts, cart: [...state.cart, product] }); //bug
+        console.log(state, product);
+        setState((state) => { 
+            return { ...state, products: tempProducts, cart: [...state.cart, product] };
         })
     }
     const openModal = (id) => {
         const product = getItem(id);
-        setState({
-            ...state,
-            modalOpen: true,
-            modalProduct: product,
-        }) //bug
+        // setState({
+        //     ...state,
+        //     modalOpen: true,
+        //     modalProduct: product,
+        // }) //bug
+        setState((state) => {
+            return {...state, modalOpen: true, modalProduct: product}
+        })
     }
     const closeModal = () => {
-        setState(() => {
+        setState((state) => {
             return ({ ...state, modalOpen: false })
         })
     }
@@ -91,3 +94,4 @@ export { ProductProvider, ProductConsumer };
 //    return <b>{hello}</b>
 //   }}
 //</ProductConsumer>
+//https://viblo.asia/p/tim-hieu-setstate-trong-reactjs-07LKXpNPKV4 (debug)

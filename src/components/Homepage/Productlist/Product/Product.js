@@ -12,6 +12,7 @@ const Product = (props) => {
             <div className="card">
                 <ProductConsumer>
                     { value => {
+                        //console.log(value);
                         return (
                         <div className="img-container p-5" onClick={() => value.handleDetail(id)}>
                             <Link to="/detail">
