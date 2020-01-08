@@ -7,10 +7,10 @@ const Navbar = () => {
     return (
         <SC_NAVBAR className="navbar navbar-expand">
             <Link to="/">
-                <img src={logo} alt="logo" className="navbar-brand"></img>
+                <img src={logo} alt="logo" className="navbar-brand" style={{width: '35px'}}></img>
             </Link>
             <ul className="navbar-nav align-items-center">
-                <li className="nav-item ml-5">
+                <li className="nav-item ml-3">
                     <Link to="/" className="nav-link">
                         Product
                     </Link>
