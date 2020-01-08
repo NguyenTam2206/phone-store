@@ -12,4 +12,10 @@ body {
     font-weight: 200;
 }
 
+.btn-black {
+    background : transparent;
+    font-size : .8rem !important;
+    border : solid 0.1rem  #38024a !important;
+}
+
 

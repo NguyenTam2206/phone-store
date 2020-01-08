@@ -10,6 +10,9 @@ const ProductProvider = (props) => {
         cart: [],
         modalOpen: false,
         modalProduct: detailProduct,
+        cartSubTotal: 0,
+        cartTax: 0,
+        cartTotal: 0,
     })
 
     useEffect(() => {
@@ -19,8 +22,25 @@ const ProductProvider = (props) => {
         });
         setState((state) => {
             return { ...state, products: tempProducts };
-        })
+        });
     }, [])
+
+    useEffect(()=>{
+        let subTotal = 0;
+            state.cart.map(item => (subTotal += item.total));
+            const tempTax = subTotal * 0.1;
+            const tax = parseFloat(tempTax.toFixed(2));
+            const total = subTotal + tax;
+            setState((state)=>{
+                return ({
+                    ...state,
+                    cartSubTotal: subTotal,
+                    cartTax: tax,
+                    cartTotal: total,
+                })
+            })
+    },[state.cart])
+    //useEffect dùng để callback function sau khi setState --- https://github.com/reactjs/rfcs/issues/98
 
     const getItem = (id) => {
         const product = state.products.find(item => item.id === id);
@@ -40,25 +60,32 @@ const ProductProvider = (props) => {
         product.count = 1;
         const price = product.price;
         product.total = price;
-        // setState({
-        //     ...state,
-        //     products: tempProducts,
-        //     cart:[...state.cart, product],
-        // })
-        console.log(state, product);
-        setState((state) => { 
-            return { ...state, products: tempProducts, cart: [...state.cart, product] };
+        //--------------
+        setState((state) => {
+            return { ...state, products: tempProducts, cart: [...state.cart, product]  };
         })
     }
+
+    // const addTotals = () => {
+    //     let subTotal = 0;
+    //     state.cart.map(item => (subTotal += item.total));
+    //     const tempTax = subTotal * 0.1;
+    //     const tax = parseFloat(tempTax.toFixed(2));
+    //     const total = subTotal + tax;
+    //     setState((state)=>{
+    //         return ({
+    //             ...state,
+    //             cartSubTotal: subTotal,
+    //             cartTax: tax,
+    //             cartTotal: total,
+    //         })
+    //     })
+    // }
+
     const openModal = (id) => {
         const product = getItem(id);
-        // setState({
-        //     ...state,
-        //     modalOpen: true,
-        //     modalProduct: product,
-        // }) //bug
         setState((state) => {
-            return {...state, modalOpen: true, modalProduct: product}
+            return { ...state, modalOpen: true, modalProduct: product }
         })
     }
     const closeModal = () => {
@@ -66,6 +93,63 @@ const ProductProvider = (props) => {
             return ({ ...state, modalOpen: false })
         })
     }
+    const increment = (id) => {
+        let tempCart = [...state.cart];
+        const selectedProduct = tempCart.find(item => item.id === id);
+        const index = tempCart.indexOf(selectedProduct);
+        const product = tempCart[index];
+        product.count = product.count + 1;
+        product.total = product.count * product.price;
+        setState((state)=>{
+            return({...state, cart : tempCart})
+        })
+    }
+    const decrement = (id) => {
+        let tempCart = [...state.cart];
+        const selectedProduct = tempCart.find(item => item.id === id);
+        const index = tempCart.indexOf(selectedProduct);
+        const product = tempCart[index];
+        product.count = product.count -1;
+        if(product.count === 0){
+            removeItem(id);
+        } else{
+            product.total = product.count * product.price;
+            setState((state)=>{
+                return({...state, cart : tempCart})
+            })
+        }
+    }
+    const removeItem = (id) => {
+        let tempProducts = [...state.products];
+        let tempCart = [...state.cart];
+        tempCart = tempCart.filter(item => item.id !== id);
+        const index = tempProducts.indexOf(getItem(id));
+        let removedProduct = tempProducts[index];
+        removedProduct.inCart = false;
+        removedProduct.count = 0;
+        removedProduct.total = 0;
+        setState((state) => {
+            return({
+                ...state,
+                cart : [...tempCart],
+                products : [...tempProducts],
+            })
+        })
+    }
+    const clearCart = () => {
+        state.cart.forEach(item => {
+            item.inCart = false;
+            item.count = 0;
+            item.total = 0;
+        })
+        setState((state)=>{
+            return ({
+                ...state,
+                cart : [],
+            })
+        })
+    }
+    
     return (
         <ProductContext.Provider value={{
             ...state,
@@ -73,6 +157,10 @@ const ProductProvider = (props) => {
             handleAddToCart,
             openModal,
             closeModal,
+            increment,
+            decrement,
+            removeItem,
+            clearCart,
         }}>
             {props.children}
         </ProductContext.Provider>

@@ -9,7 +9,7 @@ const Modal = () => {
         <ProductConsumer>
             {value => {
                 const { modalOpen, closeModal } = value;
-                const { id, title, price, img } = value.modalProduct;
+                const { title, price, img } = value.modalProduct;
                 if (!modalOpen) {
                     return null;
                 }
